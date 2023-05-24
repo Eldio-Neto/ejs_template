@@ -1,27 +1,37 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const Posts = require('../models/post');
+const path = require('path');
+const fs = require('fs');
 const router = express.Router();
 
-router.get('/all',(req, res)=>{
-    res.json(JSON.stringify(Posts.getAll()));
-})
+let user = {
+    id: 0,
+    name: 'Eldio',
+    phone: '(92)9999-9999'
+}
 
-router.post('/new',bodyParser.json(), (req, res)=>{
-   
-    let title = req.body.title;
-    let description = req.body.description;
+function render(data, obj) {
+    for (let key in obj) {
+        data = data.replace(`{{{${key}}}}`, obj[key]);
+    }
+    return data;
+}
 
-    Posts.newPost(title, description);
 
-    res.send("Post adicionado!");
 
-})
+router.get('/', (req, res) => {
+    const filePath = path.join(__dirname, '../template/index.html');
+    
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        
+        res.send(render(data,user));
+    });
+});
 
-router.delete('/excluir/:id', (req, res)=>{
-   
-    let id = req.params.id;
-    res.send(Posts.deletePost(id))    
-})
 
 module.exports = router;

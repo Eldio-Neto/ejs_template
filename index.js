@@ -1,11 +1,9 @@
-const PORT = 3000;
 const express = require('express');
-const path = require('path');
 const apiRoutes = require('./routes/api');
-const app = express();
 
-app.use('/api',apiRoutes);
-app.use(express.static(path.join(__dirname, "public")));
+const PORT = 3000;
+const app = express();
+app.use('/a',apiRoutes);
 
 app.listen(PORT, ()=>{
     console.log("server running on port " + PORT);
